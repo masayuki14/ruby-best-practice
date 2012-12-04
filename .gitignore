@@ -16,3 +16,9 @@ tmp
 .yardoc
 _yardoc
 doc/
+
+*.swo
+*.swp
+*~
+Gemfile.lock
+vendor/*
