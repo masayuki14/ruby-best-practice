@@ -25,4 +25,14 @@ class QusetionerTest < Test::Unit::TestCase
       assert_nil @questioner.yes_or_no(mu), "#{mu.inspect} expected to parse as nil"
     end
   end
+
+  must "respond 'Good I'm Glad' whe inquire_about_happiness gets 'yes'" do
+    def @questioner.ask(question); return true; end
+    assert_equal "Good I'm Glad.", @questioner.inquire_about_happiness
+  end
+
+  must "respond 'That's so Bad.' when inquire_about_happiness gets 'no'" do
+    def @questioner.ask(question); return false; end
+    assert_equal "That's so Bad.", @questioner.inquire_about_happiness
+  end
 end
