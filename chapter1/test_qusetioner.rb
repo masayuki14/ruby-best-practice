@@ -2,6 +2,7 @@ $:.unshift File.dirname(__FILE__)
 require 'questioner'
 require 'test/unit'
 require 'test_unit_extensions'
+require 'flexmock/test_unit'
 
 class QusetionerTest < Test::Unit::TestCase
   def setup
@@ -27,12 +28,12 @@ class QusetionerTest < Test::Unit::TestCase
   end
 
   must "respond 'Good I'm Glad' whe inquire_about_happiness gets 'yes'" do
-    def @questioner.ask(question); return true; end
-    assert_equal "Good I'm Glad.", @questioner.inquire_about_happiness
+    stubbed = flexmock(@questioner, :ask => true)
+    assert_equal "Good I'm Glad.", stubbed.inquire_about_happiness
   end
 
   must "respond 'That's so Bad.' when inquire_about_happiness gets 'no'" do
-    def @questioner.ask(question); return false; end
-    assert_equal "That's so Bad.", @questioner.inquire_about_happiness
+    stubbed = flexmock(@questioner, :ask => false)
+    assert_equal "That's so Bad.", stubbed.inquire_about_happiness
   end
 end
