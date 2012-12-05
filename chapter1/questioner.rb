@@ -1,12 +1,17 @@
 class Questioner
 
+  def initialize(input=STDIN, output=STDOUT)
+    @input  = input
+    @output = output
+  end
+
   def inquire_about_happiness
     ask("Are you happy?") ? "Good I'm Glad." : "That's so Bad."
   end
 
   def ask(question)
-    puts question
-    response = yes_or_no(gets.chomp)
+    @output.puts question
+    response = yes_or_no(@input.gets.chomp)
     response.nil? ? ask(question): response
   end
 
