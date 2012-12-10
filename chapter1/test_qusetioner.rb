@@ -7,43 +7,49 @@ require 'stringio'
 
 class QusetionerTest < Test::Unit::TestCase
   def setup
-    @input  = StringIO.new
-    @output = StringIO.new
+    @input  = flexmock('input')
+    @output = flexmock('output')
     @questioner = Questioner.new(@input, @output)
     @question   = "Are you happy?"
   end
 
   %w[y Y YES yes Yes yeS].each do |yes|
     must "return true when parsing #{yes}" do
-      provide_input(yes)
-      assert @questioner.ask(@question), "#{yes.inspect} expected to be true"
       expect_output(@question)
+      provide_input(yes)
+      assert @questioner.ask(@question), "Expected #{yes} to be true"
     end
   end
 
   %w[n no NO nO N].each do |no|
     must "return false when parsing #{no}" do
-      provide_input(no)
-      assert !@questioner.ask(@question), "#{no.inspect} expected to be false"
       expect_output(@question)
+      provide_input(no)
+      assert !@questioner.ask(@question), "Expected #{no} to be false"
     end
   end
 
   [['y', true],['n', false]].each do |input,state|
     must "continue to ask for input until given #{input}" do
-      provide_input("Note\nYesterday\nwxyz\n#{input}")
+      %w[Note Yesterday wxyz].each do |i|
+        expect_output(@question)
+        provide_input(i)
+        expect_output("I don't understand.")
+      end
+
+      expect_output(@question)
+      provide_input(input)
+
       assert_equal state, @questioner.ask(@question)
-      expect_output("#{@question}\nI don't understand.\n"*3 + "#{@question}\n")
     end
   end
 
   def provide_input(string)
-    @input << string
-    @input.rewind
+    @input.should_receive(:gets => string).once
   end
 
 
   def expect_output(string)
-    assert_equal string.chomp, @output.string.chomp
+    @output.should_receive(:puts => string).with(string).once
   end
 end
